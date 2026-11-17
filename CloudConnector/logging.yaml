@@ -1,0 +1,22 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  detailed:
+    format: "%(levelname)s %(name)s: %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: detailed
+    level: DEBUG
+loggers:
+  urllib3:
+    level: DEBUG
+    handlers: [console]
+    propagate: false
+  urllib3.connectionpool:
+    level: DEBUG
+    handlers: [console]
+    propagate: false
+root:
+  level: INFO
+  handlers: [console]

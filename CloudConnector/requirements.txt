@@ -1,0 +1,4 @@
+hdbcli
+pandas
+requests
+PyYAML
