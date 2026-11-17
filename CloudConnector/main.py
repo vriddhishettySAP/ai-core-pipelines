@@ -75,18 +75,18 @@ if __name__ == "__main__":
     DESTINATION_NAME = os.environ.get("DESTINATION_NAME", "S4H_ODATA_DEST")
     ODATA_PATH       = "/sap/opu/odata/sap/ZKM_I_CUSTOMER_SRV/I_Customer"
 
-    proxy_host = os.getenv(
-        "CONNECTIVITY_PROXY_HOST",
-         "connectivity-proxy.connectivity-proxy.svc.cluster.local")
-    proxy_port = os.getenv("CONNECTIVITY_PROXY_PORT", "20003")
+    # proxy_host = os.getenv(
+    #     "CONNECTIVITY_PROXY_HOST",
+    #      "connectivity-proxy.connectivity-proxy.svc.cluster.local")
+    # proxy_port = os.getenv("CONNECTIVITY_PROXY_PORT", "20003")
+    # proxies = {
+    #      "http":  f"http://{proxy_host}:{proxy_port}",
+    #      "https": f"http://{proxy_host}:{proxy_port}",
+    #  }
     proxies = {
-         "http":  f"http://{proxy_host}:{proxy_port}",
-         "https": f"http://{proxy_host}:{proxy_port}",
+     "http": "http://connectivity-proxy.connectivity-proxy.svc.cluster.local:20003",
+     "https": "http://connectivity-proxy.connectivity-proxy.svc.cluster.local:20003",
      }
-     #proxies = {
-     #"http": "http://connectivity-proxy.default.svc.cluster.local:20003",
-     #https": "http://connectivity-proxy.default.svc.cluster.local:20003",
-     #}
 
     try:
         print(f"Resolving BTP destination: {DESTINATION_NAME}")
