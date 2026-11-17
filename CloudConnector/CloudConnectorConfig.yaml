@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: aiw-cc-demo-v4
+  annotations:
+    scenarios.ai.sap.com/name: "S/4HANA connectivity v4"
+    scenarios.ai.sap.com/description: "Test SAP AI Core -> BTP Destination -> Connectity Proxy -> Cloud Connector -> S/4HANA v4"
+    executables.ai.sap.com/name: "rise-cloud-connector-demo-v4"
+    executables.ai.sap.com/description: "Test Connection on S/4HANA-v4"
+  labels:
+    scenarios.ai.sap.com/id: "rise-connectivity-v4"
+    ai.sap.com/version: "2.0.0"
+spec:
+  imagePullSecrets:
+    - name: vs-docker-registry          #Enter name of Docker Secret in AI Core
+  entrypoint: connect
+  templates:
+    - name: connect
+      metadata:
+        labels:
+          ai.sap.com/resourcePlan: starter
+      container:
+        image: "docker.io/vriddhishetty19/rise-connection:06"   #Enter path to your Docker Image
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        command: ["/bin/sh", "-c"]
+        args:
+        - "python /app/src/main.py"
+        env:
+          # for detailed logs
+          - name: PYTHONUNBUFFERED
+            value: "1"
+          - name: TRACE
+            value: "true"
+          - name: HTTPS_PROXY_TRACING
+            value: "1"          # Forces detailed logging for HTTPS proxy connection steps
+          - name: HTTP_PROXY_DEBUG
+            value: "true"       # Enables debugging on standard proxy utilities
+          - name: NODE_TLS_REJECT_UNAUTHORIZED
+            value: "0"          # ONLY FOR TESTING: Helps identify if the tunnel is failing due to SSL/TLS certificate chain blocks  
+          # BTP Destinaion Name  
+          - name: DESTINATION_NAME
+            valueFrom: {secretKeyRef: {name: btp-destination-name, key: destination_name}}
+          # Destination Service Creds
+          - name: DEST_CLIENT_ID
+            valueFrom: {secretKeyRef: {name: dest-service-creds-2, key: clientid}}
+          - name: DEST_CLIENT_SECRET
+            valueFrom: {secretKeyRef: {name: dest-service-creds-2, key: clientsecret}}  
+          - name: DEST_URL
+            valueFrom: {secretKeyRef: {name: dest-service-creds-2, key: url}}  
+          - name: DEST_URI
+            valueFrom: {secretKeyRef: {name: dest-service-creds-2, key: uri}}  
+          # Connectivity token (same as SAP demo)
+          - name: CP_CLIENT_ID
+            valueFrom: {secretKeyRef: {name: conn-service-creds-2, key: clientid}}
+          - name: CP_CLIENT_SECRET
+            valueFrom: {secretKeyRef: {name: conn-service-creds-2, key: clientsecret}}
+          - name: CP_TOKEN_SERVICE_URL
+            valueFrom: {secretKeyRef: {name: conn-service-creds-2, key: token_service_url}}
