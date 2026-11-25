@@ -9,7 +9,7 @@ metadata:
     executables.ai.sap.com/description: "DSP read from AI Core v2"
   labels:
     scenarios.ai.sap.com/id: "dsp-read-v2"
-    ai.sap.com/version: "2.0.0"
+    ai.sap.com/version: "2.0.1"
 spec:
   imagePullSecrets:
     - name: vs-docker-registry          #Enter name of Docker Secret in AI Core
@@ -20,7 +20,7 @@ spec:
         labels:
           ai.sap.com/resourcePlan: starter
       container:
-        image: "docker.io/vriddhishetty19/dsp-read:01"   #Enter path to your Docker Image
+        image: "docker.io/vriddhishetty19/dsp-read:02"   #Enter path to your Docker Image
         command: ["/bin/sh", "-c"]
         args:
         - "python /app/src/main.py"
