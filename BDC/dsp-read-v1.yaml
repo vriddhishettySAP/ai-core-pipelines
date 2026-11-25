@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: dsp-read-v2
+  annotations:
+    scenarios.ai.sap.com/name: "DSP read from AI Core v2"
+    scenarios.ai.sap.com/description: "DSP read from AI Core v2"
+    executables.ai.sap.com/name: "dsp-read-v2"
+    executables.ai.sap.com/description: "DSP read from AI Core v2"
+  labels:
+    scenarios.ai.sap.com/id: "dsp-read-v2"
+    ai.sap.com/version: "2.0.0"
+spec:
+  imagePullSecrets:
+    - name: vs-docker-registry          #Enter name of Docker Secret in AI Core
+  entrypoint: connect
+  templates:
+    - name: connect
+      metadata:
+        labels:
+          ai.sap.com/resourcePlan: starter
+      container:
+        image: "docker.io/vriddhishetty19/dsp-read:01"   #Enter path to your Docker Image
+        command: ["/bin/sh", "-c"]
+        args:
+        - "python /app/src/main.py"
+        env:
+          # for detailed logs
+          - name: PYTHONUNBUFFERED
+            value: "1"
+          # for detailed logs
+          - name: PYTHONUNBUFFERED
+            value: "1" 
+          # DSP Connection
+          - name: HANA_HOST
+            valueFrom: {secretKeyRef: {name: dsp-creds, key: HANA_HOST}}
+          - name: HANA_PORT
+            valueFrom: {secretKeyRef: {name: dsp-creds, key: HANA_PORT}}
+          - name: HANA_USER
+            valueFrom: {secretKeyRef: {name: dsp-creds, key: HANA_USER}}
+          - name: HANA_PASSWORD
+            valueFrom: {secretKeyRef: {name: dsp-creds, key: HANA_PASSWORD}}
